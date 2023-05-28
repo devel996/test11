@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  nginx:
+    container_name: app_nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/DockerFile
+    ports:
+      - 443:443
+      - 80:80
+    links:
+      - fpm
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+      - ${APP_PATH_CERTS}:${CONTAINER_PATH_CERTS}
+    depends_on:
+      - fpm
+      - mysql
+      - mysql-test
+    networks:
+      - app-network
+  fpm:
+    container_name: app_fpm
+    build:
+      context: ./
+      dockerfile: docker/fpm/DockerFile
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+    links:
+      - mysql-test
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    container_name: app_mysql
+    image: mysql:8.0.30
+    restart: always
+    tty: true
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    networks:
+      - app-network
+
+  mysql-test:
+    container_name: app_test_mysql
+    image: mysql:8.0.30
+    restart: always
+    tty: true
+    ports:
+      - 3309:3306
+    environment:
+      MYSQL_DATABASE: ${MYSQL_TEST_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./docker/mysql-test:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

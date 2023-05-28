@@ -1,0 +1,13 @@
+actor: ApiTester
+modules:
+  enabled:
+    - REST:
+        url: http://app_nginx/index-test.php/
+        depends: [PhpBrowser]
+        part: Json
+    - Yii2:
+        part: [orm, email, fixtures]
+        entryScript: index-test.php
+        cleanup: true
+  config:
+    - Yii2

@@ -1,0 +1,103 @@
+{
+  "name": "app/test",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "David Karapetyan",
+      "email": "davidkarapetyan996@gmail.com"
+    }
+  ],
+  "minimum-stability": "alpha",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=8.1",
+    "lcobucci/jwt": "^4.2",
+    "notamedia/yii2-sentry": "^1.7",
+    "ramsey/uuid": "^4.7",
+    "shaqman/yii2-queue-mailer": "^0.3.0",
+    "symfony/dotenv": "^6.2",
+    "vlucas/phpdotenv": "^5.4",
+    "yiisoft/yii2": "~2.0.47",
+    "yiisoft/yii2-queue": "^2.3",
+    "yiisoft/yii2-redis": "^2.0",
+    "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
+    "zircote/swagger-php": "^4.7"
+  },
+  "require-dev": {
+    "codeception/codeception": "^4.0",
+    "codeception/verify": "~0.5.0 || ~1.1.0",
+    "codeception/specify": "~0.4.6",
+    "symfony/browser-kit": ">=2.7 <=4.2.4",
+    "codeception/module-filesystem": "^1.0.0",
+    "codeception/module-yii2": "^1.0.0",
+    "codeception/module-asserts": "^1.0.0",
+    "codeception/module-phpbrowser": "1.*",
+    "codeception/module-rest": "1.*",
+    "squizlabs/php_codesniffer": "^3.0.0"
+  },
+  "replace": {
+    "nunomaduro/larastan": "^1.0.4",
+    "bower-asset/jquery": "^3.6.0",
+    "bower-asset/inputmask": "~3.3.5",
+    "bower-asset/punycode": "1.3.*",
+    "bower-asset/yii2-pjax": "~2.0.1"
+  },
+  "config": {
+    "process-timeout": 1800,
+    "fxp-asset": {
+      "enabled": false
+    },
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "phpstan/extension-installer": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "digitalrevolution/php-codesniffer-baseline": true,
+      "php-http/discovery": true
+    },
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "app\\": "./",
+      "yii\\": "vendor/yiisoft/yii2"
+    },
+    "classmap": [
+      "vendor/yiisoft/yii2/Yii.php"
+    ]
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "yii\\composer\\Installer::postInstall"
+    ],
+    "post-create-project-cmd": [
+      "yii\\composer\\Installer::postCreateProject",
+      "yii\\composer\\Installer::postInstall"
+    ],
+    "check": [
+      "@tests"
+    ],
+    "api-test": "@php codecept run api",
+    "api-doc-generate": "@php openapi modules -o openapi.yaml"
+  },
+  "extra": {
+    "yii\\composer\\Installer::postCreateProject": {
+      "setPermission": [
+        {
+          "runtime": "0777",
+          "yii": "0755"
+        }
+      ]
+    },
+    "phpstan": {
+      "includes": [
+        "rules.neon"
+      ]
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}
